@@ -3,7 +3,7 @@
 /**
  * Physical address. 
  */
-class Address {
+abstract class Address implements Model {
 
     const ADDRESS_TYPE_RESIDENCE = 1;
     const ADDRESS_TYPE_BUSINESS = 2;
@@ -43,10 +43,19 @@ class Address {
     protected $_time_updated;
 
     /**
+     * Post clone behavior.
+     */
+    function __clone() {
+        $this->_time_created = time();
+        $this->_time_updated = NULL;
+    }
+
+    /**
      * Constructor.
      * @param array $data Optional array of property names and values.
      */
     function __construct($data = array()) {
+        $this->_init();
         $this->_time_created = time();
 
         // Ensure that the Address can be populated.
@@ -97,11 +106,6 @@ class Address {
      * @param mixed $value
      */
     function __set($name, $value) {
-        // Only set valid address type id.
-        if ('address_type_id' == $name) {
-            $this->_setAddressTypeId($value);
-            return;
-        }
         // Allow anything to set the postal code.
         if ('postal_code' == $name) {
             $this->$name = $value;
@@ -119,6 +123,11 @@ class Address {
     function __toString() {
         return $this->display();
     }
+
+    /**
+     * Force extending classes to implement init method.
+     */
+    abstract protected function _init();
 
     /**
      * Guess the postal code given the subdivision and city name.
@@ -188,4 +197,15 @@ class Address {
             $this->_address_type_id = $address_type_id;
         }
     }
+
+    /**
+     * Load an Address.
+     * @param int $address_id
+     */
+    final public static function load($address_id) {}
+
+    /**
+     * Save an Address.
+     */
+    final public function save() {}
 }
