@@ -57,3 +57,17 @@ echo '$address_business_copy is ' . ($address_business === $address_business_cop
 echo '<br/>$address_business is class ' . get_class($address_business) . '.';
 echo '<br/>$address_business_copy is ' . ($address_business_copy instanceof
 AddressBusiness ? '' : 'not ') . ' an AddressBusiness.';
+
+echo '<h2>Testing typecasting to an object</h2>';
+$test_object = (object) 12345;
+echo '<tt><pre>' . var_export($test_object, TRUE) . '</pre></tt>';
+
+echo '<h2>Loading from database</h2>';
+try {
+    $address_db = Address::load(0);
+    echo '<tt><pre>' . var_export($address_db, TRUE) . '</pre></tt>';
+}
+catch (ExceptionAddress $e) {
+    echo $e;
+}
+
